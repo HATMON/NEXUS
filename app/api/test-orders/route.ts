@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 
 import { connectToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
@@ -7,7 +8,12 @@ import { getMockOrders } from "@/lib/mock-store";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "Not found." }, { status: 404 });
+  }
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const db = await connectToDatabase();
 
