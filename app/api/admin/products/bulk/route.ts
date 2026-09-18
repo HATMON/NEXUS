@@ -13,7 +13,9 @@ import { requireAdmin } from "@/lib/admin-auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
+export async function POST(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const { productIds, action, stockValue, activeValue, lowStockValue } = body;
