@@ -13,7 +13,9 @@ import { requireAdmin } from "@/lib/admin-auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
+export async function GET(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const db = await connectToDatabase();
     if (db) {
@@ -42,7 +44,9 @@ export async function GET(request: NextRequest) {\n  const auth = requireAdmin(r
   }
 }
 
-export async function POST(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
+export async function POST(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const {
@@ -113,7 +117,9 @@ export async function POST(request: NextRequest) {\n  const auth = requireAdmin(
   }
 }
 
-export async function PATCH(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
+export async function PATCH(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const { productId, ...updates } = body;
@@ -159,7 +165,9 @@ export async function PATCH(request: NextRequest) {\n  const auth = requireAdmin
   }
 }
 
-export async function DELETE(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
+export async function DELETE(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const { productId } = body;
