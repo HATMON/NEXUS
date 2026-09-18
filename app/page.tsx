@@ -5,9 +5,10 @@ import Testimonials from "@/components/homepage/Testimonials";
 import NewsletterCTA from "@/components/homepage/NewsletterCTA";
 import ProductCard from "@/components/ProductCard";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { products } from "@/lib/products";
+import { getCatalogProducts } from "@/lib/catalog";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const products = await getCatalogProducts();
   return (
     <div>
       {/* Hero Section */}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { products } from "@/lib/products";
+import { getPurchasableProducts } from "@/lib/catalog";
 
 type IncomingItem = {
   slug: string;
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         throw new Error(`Product not found: ${item.slug}`);
       }
 
-      if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+      if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > product.stock) {
         throw new Error(`Invalid quantity for ${product.name}`);
       }
 

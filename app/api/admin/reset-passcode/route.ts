@@ -1,50 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, requestIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  try {
-    const { action, phoneInput, code, newPasscode } = await req.json();
-    const targetPhone = process.env.ADMIN_RESET_PHONE || "0727 971171";
-
-    if (action === "send-otp") {
-      const digitsInput = (phoneInput || "").replace(/[^0-9]/g, "");
-      const targetDigits = targetPhone.replace(/[^0-9]/g, "");
-
-      if (!digitsInput.endsWith(targetDigits.slice(-9)) && digitsInput !== targetDigits) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: `Unrecognized admin recovery phone number. Verification OTP can only be dispatched to registered admin number.`,
-          },
-          { status: 400 }
-        );
-      }
-
-      // Generate 6-digit OTP code on server
-      const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-
-      return NextResponse.json({
-        success: true,
-        message: `Verification OTP successfully sent to registered admin phone number.`,
-        otpCode: generatedOtp,
-      });
-    }
-
-    if (action === "verify-reset") {
-      if (!newPasscode || newPasscode.length < 4) {
-        return NextResponse.json(
-          { success: false, message: "New passcode must be at least 4 characters long." },
-          { status: 400 }
-        );
-      }
-
-      return NextResponse.json({
-        success: true,
-        message: "Passcode updated successfully. Please update ADMIN_PASSCODE in your environment secrets to persist changes across server restarts.",
-      });
-    }
-
-    return NextResponse.json({ success: false, message: "Invalid action" }, { status: 400 });
-  } catch (error) {
-    return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+  const limit = checkRateLimit(`admin-reset:${requestIp(req.headers)}`, 3, 30 * 60 * 1000);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { success: false, message: "Too many recovery attempts. Try again later." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } },
+    );
   }
+
+  // Password recovery must be performed through a configured identity/OTP provider.
+  // Never return OTPs or accept a reset without server-side OTP verification.
+  return NextResponse.json(
+    {
+      success: false,
+      message:
+        "Admin self-service recovery is disabled until a secure SMS/email OTP provider is configured. Use the deployment secret manager to rotate ADMIN_PASSCODE.",
+    },
+    { status: 503 },
+  );
 }

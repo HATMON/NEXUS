@@ -8,6 +8,8 @@ import Order, {
   ORDER_STATUSES,
 } from "@/models/Order";
 
+import { requireAdmin } from "@/lib/admin-auth";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -53,7 +55,9 @@ const statusMessages: Record<OrderStatus, string> = {
     "Your order has been cancelled.",
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const db = await connectToDatabase();
 
@@ -96,6 +100,8 @@ export async function GET() {
 export async function PATCH(
   request: NextRequest,
 ) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const body = (await request.json()) as {
       orderId?: string;

@@ -1,5 +1,5 @@
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/lib/products";
+import { getCatalogProducts } from "@/lib/catalog";
 
 type ShopPageProps = {
   searchParams?: {
@@ -9,7 +9,8 @@ type ShopPageProps = {
   };
 };
 
-export default function ShopPage({ searchParams }: ShopPageProps) {
+export default async function ShopPage({ searchParams }: ShopPageProps) {
+  const products = await getCatalogProducts();
   const selectedCategory = searchParams?.category ?? "All Products";
   const searchTerm = searchParams?.search?.trim().toLowerCase() ?? "";
   const sortOption = searchParams?.sort ?? "featured";
