@@ -55,7 +55,9 @@ const statusMessages: Record<OrderStatus, string> = {
     "Your order has been cancelled.",
 };
 
-export async function GET(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
+export async function GET(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const db = await connectToDatabase();
 
@@ -95,7 +97,11 @@ export async function GET(request: NextRequest) {\n  const auth = requireAdmin(r
   }
 }
 
-export async function PATCH(\n  request: NextRequest,\n) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
+export async function PATCH(
+  request: NextRequest,
+) {
+  const auth = requireAdmin(request);
+  if (auth.response) return auth.response;
   try {
     const body = (await request.json()) as {
       orderId?: string;
