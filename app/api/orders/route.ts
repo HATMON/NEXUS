@@ -5,7 +5,7 @@ import {
 } from "next/server";
 
 import { connectToDatabase } from "@/lib/mongodb";
-import { products } from "@/lib/products";
+import { getPurchasableProducts } from "@/lib/catalog";
 import Order from "@/models/Order";
 
 export const runtime = "nodejs";
