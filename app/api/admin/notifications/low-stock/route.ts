@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMockProducts, getMockStockAlerts, triggerLowStockEmail } from "@/lib/mock-store";
 
+import { requireAdmin } from "@/lib/admin-auth";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
   try {
     const products = getMockProducts();
     const lowStockProducts = products.filter((p) => p.stock <= p.lowStockLevel);
@@ -23,7 +25,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {\n  const auth = requireAdmin(request);\n  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const { productId, recipientEmail } = body;
