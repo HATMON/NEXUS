@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProductBySlug } from "@/lib/products";
+import { getCatalogProductBySlug } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import AddToCartButton from "./AddToCartButton";
 
@@ -12,7 +12,7 @@ type ProductPageProps = {
 export default async function ProductPage({
   params,
 }: ProductPageProps) {
-  const product = await getProductBySlug(params.slug);
+  const product = await getCatalogProductBySlug(params.slug);
 
   if (!product) {
     notFound();
